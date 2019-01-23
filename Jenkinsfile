@@ -66,8 +66,6 @@ stage('build') {
     linux_test_runners: doDockerBuild('test-runners'),
     macos_node_debug: doMacBuild('node Debug'),
     macos_node_release: doMacBuild('node Release'),
-    //macos_realmjs_debug: doMacBuild('realmjs Debug'),
-    //macos_realmjs_release: doMacBuild('realmjs Release'),
     macos_react_tests_debug: doMacBuild('react-tests Debug'),
     macos_react_tests_release: doMacBuild('react-tests Release'),
     macos_react_example_debug: doMacBuild('react-example Debug'),
