@@ -197,6 +197,7 @@ static void sendAppEvent(NSString *name, id body) {
 
         if (level >= RCTLogLevelError) {
             NSString *type = (source == RCTLogSourceJavaScript) ? @"JS" : @"Native";
+          if (![message containsString:@"Runtime is not ready for debugging"])
             XCTFail(@"%@ Error: %@", type, RCTFormatLog(nil, level, fileName, lineNumber, message));
         }
     });
