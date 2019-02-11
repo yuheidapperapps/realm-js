@@ -70,6 +70,10 @@ static void sendAppEvent(NSString *name, id body) {
     RCTAddLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
         NSAssert(level < RCTLogLevelError, RCTFormatLog(nil, level, fileName, lineNumber, message));
     });
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserverForName:RCTJavaScriptDidLoadNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+      NSLog(@"RCTJavaScriptDidLoadNotification fired");
+  }];
 }
 
 + (Class)executorClass {
@@ -83,7 +87,9 @@ static void sendAppEvent(NSString *name, id body) {
 + (XCTestSuite *)defaultTestSuite {
     @autoreleasepool {
         XCTestSuite *suite = [super defaultTestSuite];
+        NSLog(@"begin reload");
         [RCTBridge.currentBridge reload];
+        NSLog(@"begin wait for load notification");
         [self waitForNotification:RCTJavaScriptDidLoadNotification];
 
         sendAppEvent(@"test-names", nil);
@@ -109,14 +115,17 @@ static void sendAppEvent(NSString *name, id body) {
 
 + (void)setUp {
     [super setUp];
+  NSLog(@"setUp");
 
     Class executorClass = [self executorClass];
     RCTBridge *bridge = [RCTBridge currentBridge];
     if (executorClass != bridge.executorClass) {
         bridge.executorClass = executorClass;
     }
+  NSLog(@"setUp reload");
     [bridge reload];
     [self waitForNotification:RCTJavaScriptDidLoadNotification];
+  NSLog(@"setUp got notification");
 }
 
 + (NSNotification *)waitForNotification:(NSString *)notificationName {
